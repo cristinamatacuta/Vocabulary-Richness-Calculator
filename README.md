@@ -14,7 +14,7 @@ Usage
 Place the text files you want to analyze in the same directory as this script.
 
 
-Run the script by executing the following command:
+## Run the script by executing the following command:
 
 bash
 Copy code
