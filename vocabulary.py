@@ -10,6 +10,7 @@ def read_book1():
     with open("dorian.txt", "r", encoding="utf-8") as file_read:
         my_file1=file_read.read()
         return my_file1
+    
 def read_book2():
     with open('jekyll.txt', "r", encoding="utf-8") as file_read2:
         my_file2=file_read2.read()
@@ -42,12 +43,19 @@ def real_words(text):
     real_words=[lematizer.lemmatize(word) for word in words]
     return real_words
 
-#define function for TTR
+#define function for TTR after lemmatization
 def vocab_richness(text):
     unnique_words=set(real_words(text))
     words=real_words(text)
-    ttr=len(unnique_words)/len(words)
+    ttr=len(unnique_words)/len(words) * 100
     return ttr
+
+#define function for ttr before lemmatization
+def vocab_richness2(text):
+    unnique_words2=set(punctuation_removed(text))
+    words2=punctuation_removed(text)
+    ttr2=len(unnique_words2)/len(words2) * 100
+    return ttr2
 
 
 #define a function for collocation
@@ -61,22 +69,10 @@ def main():
     text1 = read_book1()
     text2 = read_book2()
 
-    #print unique words from book1
-    unique_words_text1 = set(real_words(text1))
-    print("Text 1 has", len(unique_words_text1), "unique words")
-
-    #print unique words from book2
-    unique_words_text2 = set(real_words(text2))
-    print("Text 2 has", len(unique_words_text2), "unique words")
-
-    #print all words from book1
-    all_words1 = punctuation_removed(text1)
-    print("Text 1 has", len(all_words1), "words")
     
-    #print all words from book2
-    all_words2 = punctuation_removed(text2)
-    print("Text 2 has", len(all_words2), "words")
 
+   
+   #ttr after lemmatization
     ttr_text1 = vocab_richness(text1)
     ttr_text2 = vocab_richness(text2)
 
@@ -89,10 +85,26 @@ def main():
         print("Text 2 has a greater TTR")
         print(ttr_text2, ">", ttr_text1)
 
+    print()
+
     
+    #ttr before lematization
+    ttr2_text1 = vocab_richness2(text1)
+    ttr2_text2 = vocab_richness2(text2)
+
+    if ttr2_text1 > ttr2_text2:
+        print("Text 1 has a greater vocab richness")
+        print(ttr2_text1, ">", ttr2_text2)
+    elif ttr2_text1 == ttr2_text2:
+        print("Both books have equal TTR")
+    else:
+        print("Text 2 has a greater TTR")
+        print(ttr2_text2, ">", ttr2_text1)
+
     collocation_text1 = collocation(text1)
     
-
+    print()
+    print()
     collocation_text2 = collocation(text2)
     
 
