@@ -20,59 +20,81 @@ def sentences_fragmented(text):
     sentences_fragmented=sent_tokenize(text)
     return sentences_fragmented
 
-#define function for word tokenization
-def words(text):
-    # Tokenize words from the input text and convert them to lowercase
+#define a function for word tokenization
+def word_fragmentation(text):
     words = [word.lower() for word in word_tokenize(text)]
- # Tokenize words from the input text
     return words
 
-#remove puncutation
-def clean_words(text):
-    words_clean=words(text)
-    clean_words=[re.sub(r"[^\w\s]", "", word) for word in words_clean]
-    return clean_words
+#define a function to remove punctuation
 
-#lemmatize the words
+def punctuation_removed(text):
+    words = word_tokenize(text)  # Use NLTK's word_tokenize directly
+    punctuation_removed = [re.sub(r"[^\w\s]", "", word) for word in words]
+    return punctuation_removed
+
+
+
+
+#define a function to lemmatize the words
 def real_words(text):
-    words_real=clean_words(text)
+    words=punctuation_removed(text)
     lematizer=nltk.stem.WordNetLemmatizer()
-    real_words=[lematizer.lemmatize(word) for word in words_real]
+    real_words=[lematizer.lemmatize(word) for word in words]
     return real_words
 
-# function to make a set out of the real words
-def real_words_set(text):
-    real_words_set=set(real_words(text))
-    return real_words_set
-
-#function for vocabulary richness
+#define function for TTR
 def vocab_richness(text):
+    unnique_words=set(real_words(text))
     words=real_words(text)
-    set_words=real_words_set(text)
-    vocab_richness=len(words)/len(set_words)
-    return vocab_richness
+    ttr=len(unnique_words)/len(words)
+    return ttr
+
+
+#define a function for collocation
+def collocation(text):
+     text_object = nltk.Text(punctuation_removed(text))
+     return text_object.collocations()
 
 def main():
-    text1=read_book1()
-    text2=read_book2()
 
-    #vocabulary richness for text1
-    text1_richness=vocab_richness(text1)
+    
+    text1 = read_book1()
+    text2 = read_book2()
 
-    #vocabulary richness for text2
-    text2_richness=vocab_richness(text2)
+    #print unique words from book1
+    unique_words_text1 = set(real_words(text1))
+    print("Text 1 has", len(unique_words_text1), "unique words")
 
-    #comparing which books has more unique words based on their lenght
+    #print unique words from book2
+    unique_words_text2 = set(real_words(text2))
+    print("Text 2 has", len(unique_words_text2), "unique words")
 
-    if text1_richness > text2_richness:
-        print("The Portert of Dorian Gray has more unique words")
-    elif text1_richness==text2_richness:
-        print("The two books have the same number of unique words")
-    elif text1_richness<text2_richness:
-        print("The Strange Case Of Dr. Jekyll And Mr. Hyde has more unique words")
+    #print all words from book1
+    all_words1 = punctuation_removed(text1)
+    print("Text 1 has", len(all_words1), "words")
+    
+    #print all words from book2
+    all_words2 = punctuation_removed(text2)
+    print("Text 2 has", len(all_words2), "words")
+
+    ttr_text1 = vocab_richness(text1)
+    ttr_text2 = vocab_richness(text2)
+
+    if ttr_text1 > ttr_text2:
+        print("Text 1 has a greater vocab richness")
+        print(ttr_text1, ">", ttr_text2)
+    elif ttr_text1 == ttr_text2:
+        print("Both books have equal TTR")
     else:
-        print("Not enough data")
+        print("Text 2 has a greater TTR")
+        print(ttr_text2, ">", ttr_text1)
 
+    
+    collocation_text1 = collocation(text1)
+    
 
-if __name__ == "__main__" :
+    collocation_text2 = collocation(text2)
+    
+
+if __name__ == "__main__":
     main()
